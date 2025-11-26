@@ -24,3 +24,11 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.animation-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.animation-delay-2 {
+  animation-delay: 0.2s;
+}

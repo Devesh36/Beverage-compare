@@ -1,65 +1,92 @@
-import Image from "next/image";
+"use client";
+
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-white dark:bg-gray-950">
+      {/* Navbar */}
+      <nav className="flex justify-between items-center px-8 py-6 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
+        <div className="flex items-center gap-2">
+          <span className="text-3xl">🍺</span>
+          <h1 className="text-2xl font-bold text-black dark:text-white">
+            BeverageCompare
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+        </div>
+      </nav>
+
+      <main className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] px-6 py-20">
+        {/* Hero Section */}
+        <div className="text-center mb-16 max-w-3xl">
+          <div className="mb-6 inline-block">
+            <span className="text-6xl">🍷</span>
+          </div>
+          <h2 className="text-6xl font-bold text-black dark:text-white mb-6 leading-tight">
+            Smart Beverage Pricing & Comparisons
+          </h2>
+          <p className="text-xl text-gray-600 dark:text-gray-400 mb-2">
+            Find real-time prices for your favorite alcoholic beverages and get AI-powered recommendations
+          </p>
+          <p className="text-lg text-gray-500 dark:text-gray-500">
+            Make smarter drinking choices with instant comparisons
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* CTA Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl mb-16">
+          {/* Price Lookup Card */}
+          <Link href="/chat" className="group">
+            <div className="bg-linear-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-3xl border-2 border-amber-200 dark:border-amber-800/50 p-10 text-center hover:border-amber-400 dark:hover:border-amber-600 transition-all cursor-pointer hover:shadow-lg">
+              <div className="text-7xl mb-6 group-hover:scale-110 transition-transform">
+                💰
+              </div>
+              <h3 className="text-3xl font-bold text-black dark:text-white mb-4">
+                Check Prices
+              </h3>
+              <p className="text-gray-700 dark:text-gray-300 mb-8 text-base leading-relaxed">
+                Ask our AI chatbot about the current price of any beverage. Get instant, accurate results in seconds.
+              </p>
+              <button className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-6 rounded-xl transition-colors text-lg">
+                Open Chat →
+              </button>
+            </div>
+          </Link>
+
+          {/* Compare Card */}
+          <Link href="/compare" className="group">
+            <div className="bg-linear-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 rounded-3xl border-2 border-blue-200 dark:border-blue-800/50 p-10 text-center hover:border-blue-400 dark:hover:border-blue-600 transition-all cursor-pointer hover:shadow-lg">
+              <div className="text-7xl mb-6 group-hover:scale-110 transition-transform">
+                ⚖️
+              </div>
+              <h3 className="text-3xl font-bold text-black dark:text-white mb-4">
+                Compare Beverages
+              </h3>
+              <p className="text-gray-700 dark:text-gray-300 mb-8 text-base leading-relaxed">
+                Compare multiple drinks side-by-side. Get AI-powered recommendations on which beverage is the best choice.
+              </p>
+              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-colors text-lg">
+                Start Comparing →
+              </button>
+            </div>
+          </Link>
+        </div>
+
+        {/* Footer Info */}
+        <div className="text-center border-t border-gray-200 dark:border-gray-800 pt-8 w-full">
+          <p className="text-gray-600 dark:text-gray-400 font-semibold">
+            Your trusted companion for beverage choices
+          </p>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 dark:bg-gray-950 text-white py-8 border-t border-gray-800">
+        <div className="max-w-5xl mx-auto px-6 text-center">
+          <p className="text-gray-400 text-sm">
+            &copy; 2025 BeverageCompare. Find beverage prices & compare drinks with AI-powered recommendations.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }
