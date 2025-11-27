@@ -14,14 +14,13 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Yo! 🍺 Which Indian city you in? (Mumbai, Delhi, Bangalore, etc.) So I can give you the real prices!",
+      text: "Hey there! 👋 What would you like to search today? (Drink prices, recommendations, comparisons, or anything else about beverages!)",
       sender: "ai",
       timestamp: new Date(),
     },
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [userLocation, setUserLocation] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -46,21 +45,6 @@ export default function ChatPage() {
 
     setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
-
-    // If location not set, save it first
-    if (!userLocation) {
-      setUserLocation(inputValue);
-      const locationConfirmation: Message = {
-        id: (Date.now() + 1).toString(),
-        text: `Sick! ${inputValue} it is 🎯\n\nNow tell me - what drink you looking for? (Price, recommendations, compare, whatever!)`,
-        sender: "ai",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, locationConfirmation]);
-      return;
-    }
-
-    // User is asking about a beverage, call API with location context
     setIsLoading(true);
 
     try {
@@ -70,7 +54,7 @@ export default function ChatPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: inputValue, location: userLocation }),
+        body: JSON.stringify({ message: inputValue }),
       });
 
       const data = await response.json();
@@ -170,7 +154,7 @@ export default function ChatPage() {
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder={userLocation ? "Ask anything about drinks! 🍻" : "Enter your city name..."}
+              placeholder="Ask anything about drinks! 🍻"
               className="flex-1 px-4 md:px-5 py-3 rounded-2xl border-2 border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:border-amber-600 dark:focus:border-amber-400 transition placeholder-gray-500 text-sm md:text-base"
               disabled={isLoading}
             />
@@ -182,11 +166,6 @@ export default function ChatPage() {
               {isLoading ? "..." : "Send"}
             </button>
           </div>
-          {!userLocation && (
-            <p className="text-center text-gray-600 dark:text-gray-400 text-xs md:text-sm mt-3 font-medium">
-              👉 Tell me your city first!
-            </p>
-          )}
         </form>
       </div>
     </div>
