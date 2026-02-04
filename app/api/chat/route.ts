@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_API_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,28 +14,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!GEMINI_API_KEY) {
+    if (!GROQ_API_KEY) {
       return NextResponse.json(
-        { error: "Gemini API key not configured" },
+        { error: "Groq API key not configured" },
         { status: 500 }
       );
     }
 
-    // Call Gemini API
-    const response = await fetch(GEMINI_API_URL, {
+    // Call Groq API
+    const response = await fetch(GROQ_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-goog-api-key": GEMINI_API_KEY,
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        contents: [
+        model: "llama-3.3-70b-versatile",
+        messages: [
           {
-            parts: [
-              {
-                text: `You are a knowledgeable yet friendly beverage expert. You're here to help answer questions about drinks in a professional yet approachable way.
-
-User Question: ${message}
+            role: "system",
+            content: `You are a knowledgeable yet friendly beverage expert. You're here to help answer questions about drinks in a professional yet approachable way.
 
 Guidelines:
 - Answer the user's question directly and thoroughly
@@ -49,25 +46,29 @@ Guidelines:
 - Feel free to use emojis sparingly to keep it engaging 🍻
 
 Focus on giving practical, honest information that answers what they're asking.`,
-              },
-            ],
+          },
+          {
+            role: "user",
+            content: message,
           },
         ],
+        temperature: 0.7,
+        max_tokens: 1024,
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error("Gemini API error:", error);
+      console.error("Groq API error:", error);
       return NextResponse.json(
-        { error: "Failed to get response from Gemini API" },
+        { error: "Failed to get response from Groq API" },
         { status: 500 }
       );
     }
 
     const data = await response.json();
     const aiResponse =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      data.choices?.[0]?.message?.content ||
       "Sorry, I couldn't process that request.";
 
     return NextResponse.json({ response: aiResponse });

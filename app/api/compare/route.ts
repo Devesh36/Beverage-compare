@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_API_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,9 +14,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!GEMINI_API_KEY) {
+    if (!GROQ_API_KEY) {
       return NextResponse.json(
-        { error: "Gemini API key not configured" },
+        { error: "Groq API key not configured" },
         { status: 500 }
       );
     }
@@ -26,19 +25,7 @@ export async function POST(request: NextRequest) {
     const beverageCount = beverages.length;
     const beverageColumns = beverages.map((b: string, i: number) => `Beverage ${i + 1}: ${b}`).join("\n");
 
-    // Call Gemini API
-    const response = await fetch(GEMINI_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": GEMINI_API_KEY,
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: `You are a beverage comparison expert in India. Compare these ${beverageCount} drinks:
+    const prompt = `You are a beverage comparison expert in India. Compare these ${beverageCount} drinks:
 ${beverageColumns}
 
 Create a detailed comparison table. Format as a pipe-separated table with ${beverageCount} beverage columns.
@@ -67,26 +54,40 @@ WEAKNESSES:
 OVERALL WINNER & RECOMMENDATIONS:
 [Based on price, taste, value - which is best and for what use case]
 
-Keep it concise, factual, and easy to compare. Use latest November 2025 India prices.`,
-              },
-            ],
+Keep it concise, factual, and easy to compare. Use latest November 2025 India prices.`;
+
+    // Call Groq API
+    const response = await fetch(GROQ_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          {
+            role: "user",
+            content: prompt,
           },
         ],
+        temperature: 0.7,
+        max_tokens: 2048,
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error("Gemini API error:", error);
+      console.error("Groq API error:", error);
       return NextResponse.json(
-        { error: "Failed to get response from Gemini API" },
+        { error: "Failed to get response from Groq API" },
         { status: 500 }
       );
     }
 
     const data = await response.json();
     const comparison =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      data.choices?.[0]?.message?.content ||
       "Unable to get comparison";
 
     return NextResponse.json({ comparison });
